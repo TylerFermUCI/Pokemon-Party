@@ -1,0 +1,92 @@
+/* You can add global styles to this file, and also import other style files */
+
+body {
+  background-color: rgb(237, 234, 224);
+}
+
+.choose_three_display {
+  padding-left: 10px;
+}
+
+.align_type_text {
+  display: flex;
+  align-items: center;
+}
+
+.pokemon_text {
+  text-transform: capitalize;
+  font-weight: bold;
+  color: black;
+  padding-top: 5px;
+}
+
+.type_image {
+  text-transform: none;
+  width: 32px;
+  height: 32px;
+  padding-right: 6px;
+}
+
+.shiny_icon {
+  text-transform: none;
+  width: 20px;
+  height: 20px;
+  padding-right: 5px;
+}
+
+.info_icon {
+  text-transform: none;
+  width: 16px;
+  height: 16px;
+  padding-right: 5px;
+}
+
+.pokemon_image {
+  width: 128px;
+  height: 128px;
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+.pokemon_image_select {
+  width: 128px;
+  height: 128px;
+}
+
+.selected_pokemon {
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+.display_party {
+  display: grid;
+  grid-template-columns: 128px 128px 128px;
+  justify-content: center;
+}
+
+.party_pokemon {
+  width: 128px;
+  height: 128px;
+  text-align: center;
+  text-transform: capitalize;
+  /*border: solid black;*/
+}
+
+.confirm_button {
+  text-align: center;
+  justify-content: center;
+  align-content: center;
+  width: 128px;
+  height: 32px;
+  padding-top: 5px;
+}
+
+p {
+  text-transform: none;
+  margin-top: 0px;
+}
+
+h3 {
+  text-align: center;
+}

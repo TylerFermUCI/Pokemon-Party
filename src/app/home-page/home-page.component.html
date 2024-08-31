@@ -1,0 +1,123 @@
+<h1>Create a Pokémon Team!</h1>
+<p>You will be given 3 random Pokemon to choose from. You only get to choose 1 from the given set. After 6 rounds of this, you will have your randomly generated Pokémon Team</p>
+<p>Click start to enable controlling the page using hand gestures.</p>
+<app-handtracker (onPrediction)="prediction($event)"></app-handtracker>
+<div [innerHTML]="gesture"></div>
+<!--Displays the chosen party pokemon for the user in a grid format-->
+<div class="display_party" *ngIf="currentPokemon.length > 0" id="capture">
+    <div class="party_pokemon" *ngFor="let pokemon of party_pokemon; let i = index">
+        <img *ngIf="shiny_party_pokemon[i] == false" class="pokemon_image_select" src="{{pokemon.sprites.front_default}}" alt="Sprite of {{pokemon.name}}">
+        <img *ngIf="shiny_party_pokemon[i] == true" class="pokemon_image_select" src="{{pokemon.sprites.front_shiny}}" alt="Shiny sprite of {{pokemon.name}}">
+    </div>
+</div>
+<br>
+<p *ngIf="currentPokemon.length == 0">Click start and open your hand to start creating your team!</p>
+<!--Displays the pokemon that the user selected-->
+<h3 *ngIf="selected_display_pokemon != undefined" style="text-transform: capitalize;">Choose {{selected_display_pokemon.name}}?</h3>
+<div *ngIf="selected_display_pokemon != undefined" class="selected_pokemon">
+    <img *ngIf="display_pokemon_shiny[pokemon_index] == false" class="pokemon_image_select" src="{{selected_display_pokemon.sprites.front_default}}" alt="Sprite of {{selected_display_pokemon.name}}">
+    <img *ngIf="display_pokemon_shiny[pokemon_index] == true" class="pokemon_image_select" src="{{selected_display_pokemon.sprites.front_shiny}}" alt="Shiny sprite of {{selected_display_pokemon.name}}">
+</div>
+<div *ngIf="selected_display_pokemon != undefined" class="selected_pokemon">
+    <button  type="button" (click)="add_to_party()" class="confirm_button">Yes</button>
+</div>
+<br *ngIf="selected_display_pokemon != undefined">
+<em *ngIf="selected_display_pokemon != undefined" class="selected_pokemon">
+    <div>
+        <img class="info_icon" src="/assets/info_icon.png" alt="info icon">
+        <span> Or use gesture </span>
+        <span><strong>Two Open Hands</strong> </span>
+        <span> to confirm</span>
+    </div>
+</em>
+<hr>
+<!--Displays the three pokemon the user gets to choose each round-->
+<div *ngIf="(currentPokemon.length > 0) && (party_pokemon.length < 6)">
+    <div class="choose_three_display" *ngFor="let pokemon of currentPokemon; let i = index" (click)="click_display_pokemon(i)">
+        <div class="align_type_text">
+            <!--Displays the name and type of the pokemon-->
+            <div>
+                <img class="type_image" *ngFor="let type of getTypes(pokemon)" src="{{type}}" [alt]="extractTypeFromString(type)">
+                <img class="shiny_icon" *ngIf="display_pokemon_shiny[i] == true" src="/assets/shiny.png" alt="Shiny pokemon symbol">
+                <div>
+                    <span class="pokemon_text">{{replaceDashes(pokemon.name)}} - </span>
+                    <span>#{{pokemon.id}}</span>
+                </div>
+            </div>
+            <!--Displays an image of the pokemon-->
+            <div>
+                <img *ngIf="display_pokemon_shiny[i] == false" class="pokemon_image" src="{{pokemon.sprites.front_default}}" alt="Sprite of {{pokemon.name}}">
+                <img *ngIf="display_pokemon_shiny[i] == true" class="pokemon_image" src="{{pokemon.sprites.front_shiny}}" alt="Shiny sprite of {{pokemon.name}}">
+            </div>
+        </div>
+        <!--Displays information on the ability of the pokemon-->
+        <div>
+            <p class="ability_text" *ngIf="display_pokemon_ability[i].is_hidden == true">
+                <span class="pokemon_text">Hidden Ability: </span>
+                <span class="pokemon_text">{{replaceDashes(display_pokemon_ability[i].ability.name)}}</span>
+                <span style="text-transform: none;"> - {{display_pokemon_ability_descriptions[i]}}</span>
+            </p>
+            <p class="ability_text" *ngIf="display_pokemon_ability[i].is_hidden == false">
+                <span class="pokemon_text">Ability: </span>
+                <span class="pokemon_text">{{replaceDashes(display_pokemon_ability[i].ability.name)}}</span>
+                <span style="text-transform: none;"> - {{display_pokemon_ability_descriptions[i]}}</span>
+            </p>
+        </div>
+        <!--Display information on clicking vs. hand gestures-->
+        <em>
+            <div>
+                <img class="info_icon" src="/assets/info_icon.png" alt="info icon">
+                <span>To choose </span>
+                <span class="pokemon_text" style="padding-top: 0px;">{{pokemon.name}}, </span>
+                <span>click on pokémon or show </span>
+                <span class="pokemon_text" style="padding-top: 0px;">{{choose_Gesture(i)}} </span>
+            </div>
+        </em>
+        <hr>
+    </div>
+</div>
+<!--Display the things you can do with the party once it is made-->
+<div *ngIf="party_pokemon.length >= 6">
+    <div>
+        <h2>Here is your team!</h2>
+        <span>Click the </span>
+        <span><strong>New Party</strong></span>
+        <span> button or use gesture </span>
+        <span><strong>Two Closed Hands</strong></span>
+        <span> to make a new party!</span>
+    </div>
+    <br>
+    <button class="confirm_button" type="button" (click)="click_Restart()">New Party</button>
+    <br>
+    <br>
+    <em>
+        <div>
+            <img class="info_icon" src="/assets/info_icon.png" alt="info icon">
+            <span>To see the newest pokémon on your team (in terms of pokédex entry/id), click </span>
+            <span><strong>Newest Pokemon</strong></span>
+            <span> or use gesture </span>
+            <span><strong>Hand Open Hand Closed</strong> </span>
+        </div>
+    </em>
+    <br>
+    <button class="confirm_button" type="button" (click)="get_Newest()">Newest Pokemon</button>
+    <br>
+    <br>
+    <!--Display the newest pokemon-->
+    <div *ngIf="newest_found">
+        <h3 style="text-transform: capitalize;">Newest Pokémon: {{newest_pokemon.name}}</h3>
+        <div class="selected_pokemon">
+            <img *ngIf="shiny_party_pokemon[newest_pokemon_index] == false" class="pokemon_image_select" src="{{newest_pokemon.sprites.front_default}}" alt="Sprite of {{newest_pokemon.name}}">
+            <img *ngIf="shiny_party_pokemon[newest_pokemon_index] == true" class="pokemon_image_select" src="{{newest_pokemon.sprites.front_shiny}}" alt="Shiny sprite of {{newest_pokemon.name}}">
+        </div>
+    </div>
+    <br>
+    <br>
+    <em>
+        <div>
+            <img class="info_icon" src="/assets/info_icon.png" alt="info icon">
+            <span>There is a secret hand gesture to make Pokémon on your team shiny. HINT: It involves 2 hands!</span>
+        </div>
+    </em>
+</div>
+
